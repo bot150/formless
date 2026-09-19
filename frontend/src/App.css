@@ -1,0 +1,143 @@
+@font-face {
+  font-family: "Priestacy";
+  src: url("/fonts/Priestacy.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.formless-page {
+  min-height: 100vh;
+  background: #f8f4f0;
+  color: #6b1f2b;
+}
+
+.hero {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+
+  padding: 40px 24px;
+
+  text-align: center;
+
+  overflow: hidden;
+}
+
+/* Small top text */
+
+.eyebrow {
+  position: absolute;
+  top: 10%;
+
+  margin: 0;
+
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  color: #6b1f2b;
+}
+
+/* Main Formless title */
+
+.logo {
+  margin: 0;
+
+  font-family: "Priestacy", serif;
+  font-size: clamp(90px, 15vw, 220px);
+  font-weight: 400;
+  line-height: 0.9;
+
+  letter-spacing: -0.04em;
+
+  color: #6b1f2b;
+}
+
+/* Subtitle */
+
+.subtitle {
+  margin: 40px 0 32px;
+
+  max-width: 420px;
+
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+
+  color: #6b1f2b;
+}
+
+/* Button */
+
+.start-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 18px;
+
+  padding: 14px 24px;
+
+  border: 1px solid #6b1f2b;
+  border-radius: 999px;
+
+  background: #6b1f2b;
+  color: #f8f4f0;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    gap 0.25s ease,
+    transform 0.25s ease;
+}
+
+.start-button span {
+  font-size: 18px;
+}
+
+.start-button:hover {
+  background: transparent;
+  color: #6b1f2b;
+
+  gap: 26px;
+
+  transform: translateY(-2px);
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+  .eyebrow {
+    top: 8%;
+    font-size: 11px;
+  }
+
+  .logo {
+    font-size: clamp(64px, 18vw, 120px);
+  }
+
+  .subtitle {
+    margin-top: 32px;
+
+    max-width: 300px;
+
+    font-size: 14px;
+  }
+
+}

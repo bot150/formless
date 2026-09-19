@@ -1,5 +1,23 @@
-__pycache__/
-.pytest_cache/
-.venv/
+# Environment variables
 .env
-*.pyc
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+temp/
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db

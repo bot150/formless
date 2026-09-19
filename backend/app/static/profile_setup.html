@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Complete Your Formless Profile</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+    .card { background-color: #1e293b; padding: 32px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5); }
+    h1 { margin-top: 0; color: #38bdf8; font-size: 22px; text-align: center; }
+    p.sub { color: #94a3b8; font-size: 14px; text-align: center; margin-top: -6px; margin-bottom: 24px; }
+    .upload-zone { border: 2px dashed #475569; border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 20px; background: #0f172a; }
+    .upload-zone:hover { border-color: #38bdf8; }
+    .field { margin-bottom: 14px; }
+    label { display: block; font-size: 13px; font-weight: 500; color: #cbd5e1; margin-bottom: 5px; }
+    input[type="text"] { width: 100%; padding: 10px 12px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #fff; font-size: 14px; }
+    input:focus { outline: none; border-color: #38bdf8; }
+    button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; background: #38bdf8; color: #0f172a; margin-top: 10px; }
+    button:hover { background: #0284c7; color: #fff; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; background: #334155; color: #38bdf8; font-weight: 600; margin-bottom: 12px; }
+    .alert { margin-top: 16px; padding: 10px 14px; border-radius: 6px; font-size: 13px; display: none; }
+    .alert-error { background: #450a0a; color: #f87171; border: 1px solid #7f1d1d; }
+    .alert-success { background: #064e3b; color: #34d399; border: 1px solid #065f46; }
+    .notice { font-size: 12px; color: #e2e8f0; background: #1e3a8a; border: 1px solid #3b82f6; padding: 8px 12px; border-radius: 6px; margin-bottom: 16px; }
+    #verificationSection { display: none; margin-top: 24px; border-top: 1px solid #334155; padding-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Complete Your Formless Profile</h1>
+    <p class="sub">Initialize your profile with Aadhaar extraction</p>
+
+    <div id="alertBox" class="alert"></div>
+
+    <div class="upload-zone" onclick="document.getElementById('aadhaarFile').click()">
+      <svg width="36" height="36" fill="none" stroke="#94a3b8" viewBox="0 0 24 24" style="margin: 0 auto 10px; display: block;">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+      </svg>
+      <span id="uploadLabel" style="color: #94a3b8; font-size: 14px;">Upload Aadhaar Card (JPG, PNG, PDF)</span>
+      <input type="file" id="aadhaarFile" accept=".jpg,.jpeg,.png,.pdf" style="display: none;" onchange="fileSelected(this)" />
+    </div>
+
+    <button type="button" id="extractBtn" onclick="uploadAadhaar()">Extract Details</button>
+
+    <div id="verificationSection">
+      <div class="notice">
+        <strong>Please verify your extracted details.</strong><br/>
+        You can edit any information before saving it to your profile.
+      </div>
+
+      <div style="margin-bottom: 10px;">
+        <span class="badge" id="sourceBadge">Source: local_mock</span>
+      </div>
+
+      <form id="verifyForm" onsubmit="return false;">
+        <div class="field">
+          <label for="profName">Full Name</label>
+          <input type="text" id="profName" required />
+        </div>
+
+        <div class="field">
+          <label for="profDob">Date of Birth</label>
+          <input type="text" id="profDob" placeholder="DD/MM/YYYY" />
+        </div>
+
+        <div class="field">
+          <label for="profGender">Gender</label>
+          <input type="text" id="profGender" />
+        </div>
+
+        <div class="field">
+          <label for="profAddress">Address</label>
+          <input type="text" id="profAddress" />
+        </div>
+
+        <button type="button" onclick="confirmProfile()">Verify & Continue</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Check if token was passed in query parameter (e.g. from Google OAuth callback)
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryToken = urlParams.get("token");
+    if (queryToken) {
+      localStorage.setItem("formless_token", queryToken);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    const token = localStorage.getItem("formless_token");
+    if (!token) {
+      window.location.href = "/auth";
+    }
+
+    function showAlert(msg, isError = true) {
+      const el = document.getElementById("alertBox");
+      el.className = isError ? "alert alert-error" : "alert alert-success";
+      el.textContent = msg;
+      el.style.display = "block";
+    }
+
+    function fileSelected(input) {
+      if (input.files && input.files[0]) {
+        document.getElementById("uploadLabel").textContent = input.files[0].name;
+      }
+    }
+
+    async function uploadAadhaar() {
+      const fileInput = document.getElementById("aadhaarFile");
+      if (!fileInput.files || !fileInput.files[0]) {
+        showAlert("Please select an Aadhaar card file first.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+
+      document.getElementById("extractBtn").disabled = true;
+      document.getElementById("extractBtn").textContent = "Extracting details...";
+
+      try {
+        const res = await fetch("/api/profile/aadhaar", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + token
+          },
+          body: formData
+        });
+
+        if (res.status === 401) {
+          showAlert("Session expired. Please log in again.");
+          setTimeout(() => window.location.href = "/auth", 1000);
+          return;
+        }
+
+        const data = await res.json();
+        if (!res.ok) {
+          let errorMsg = "Extraction failed.";
+          if (typeof data.detail === "string") {
+            errorMsg = data.detail;
+          } else if (data.detail && data.detail.message) {
+            errorMsg = data.detail.message;
+          }
+          showAlert(errorMsg);
+          return;
+        }
+
+        const fields = data.extracted_fields || data;
+        // Fill form fields with extracted details for user editing
+        document.getElementById("profName").value = fields.name || data.name || "";
+        document.getElementById("profDob").value = fields.date_of_birth || data.date_of_birth || "";
+        document.getElementById("profGender").value = fields.gender || data.gender || "";
+        document.getElementById("profAddress").value = fields.address || data.address || "";
+        document.getElementById("sourceBadge").textContent = "Source: " + (data.source || "local_mock");
+
+        document.getElementById("verificationSection").style.display = "block";
+        showAlert(data.message || "Aadhaar details extracted. Please review and verify below.", false);
+      } catch (err) {
+        showAlert("Network error during extraction.");
+      } finally {
+        document.getElementById("extractBtn").disabled = false;
+        document.getElementById("extractBtn").textContent = "Extract Details";
+      }
+    }
+
+    async function confirmProfile() {
+      const name = document.getElementById("profName").value.trim();
+      const date_of_birth = document.getElementById("profDob").value.trim();
+      const gender = document.getElementById("profGender").value.trim();
+      const address = document.getElementById("profAddress").value.trim();
+
+      if (!name) {
+        showAlert("Name is required to save your profile.");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/profile/confirm", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({ name, date_of_birth, gender, address })
+        });
+
+        if (res.status === 401) {
+          showAlert("Session expired. Please log in again.");
+          setTimeout(() => window.location.href = "/auth", 1000);
+          return;
+        }
+
+        const data = await res.json();
+        if (!res.ok) {
+          showAlert(data.detail || "Profile confirmation failed.");
+          return;
+        }
+
+        showAlert("Profile verified and saved successfully! Welcome to Formless.", false);
+      } catch (err) {
+        showAlert("Network error during confirmation.");
+      }
+    }
+  </script>
+</body>
+</html>

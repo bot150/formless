@@ -1,3 +1,5 @@
+
+import ShinyButton from "./components/ui/shiny-button";
 import "./App.css";
 
 function App() {
@@ -31,10 +33,14 @@ function App() {
             Tell us what you know. We'll handle the rest.
           </p>
 
-          <button className="start-button">
-            <span>Start filling</span>
-            <span className="arrow">↘</span>
-          </button>
+          <ShinyButton
+  label="Start filling  ↘"
+  fillColor="#6b1f2b"
+  labelColor="#f8f4f0"
+  accentColor="#f8f4f0"
+  accentSoftColor="#c98f98"
+  cornerRadius={12}
+/>
 
         </div>
 

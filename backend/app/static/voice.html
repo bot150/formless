@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formless - Voice Question & Answer</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 2rem 1rem;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 680px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+    .header h1 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+    .header p {
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .alert {
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .alert.warning {
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      display: block;
+    }
+    .alert.danger {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: var(--danger);
+    }
+    .alert.success {
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      color: var(--success);
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #e2e8f0;
+      color: #334155;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #334155;
+      margin-bottom: 0.35rem;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.625rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-size: 0.95rem;
+      color: var(--text);
+      background: #fff;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.625rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color 0.15s ease;
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+    .btn-secondary {
+      background-color: #f1f5f9;
+      color: #334155;
+      border-color: var(--border);
+    }
+    .btn-secondary:hover {
+      background-color: #e2e8f0;
+    }
+    .btn-danger {
+      background-color: #fee2e2;
+      color: var(--danger);
+      border-color: #fecaca;
+    }
+    .btn-danger:hover {
+      background-color: #fecaca;
+    }
+    .btn-success {
+      background-color: var(--success);
+      color: #fff;
+    }
+    .btn-success:hover {
+      background-color: #15803d;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .question-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+      margin: 1rem 0;
+      text-align: center;
+    }
+    .question-box h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1e3a8a;
+    }
+    .recording-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--danger);
+      margin-top: 0.5rem;
+    }
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--danger);
+      border-radius: 50%;
+      animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .transcript-box {
+      margin-top: 1rem;
+    }
+    .summary-list {
+      margin-top: 1rem;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .summary-list th, .summary-list td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+    .summary-list th {
+      background: #f8fafc;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Formless Voice Interaction</h1>
+      <p>Fill missing form fields naturally with browser speech recognition and voice synthesis</p>
+    </div>
+
+    <!-- Browser Support Warning -->
+    <div id="unsupportedWarning" class="alert warning" style="display: none;">
+      ⚠️ Web Speech Recognition API is not supported in this browser. Please use <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong> for live speech recognition.
+    </div>
+
+    <!-- Application / Session Setup -->
+    <div class="card" id="sessionCard">
+      <h3 style="margin-bottom: 0.75rem; font-size: 1.1rem;">1. Application Session</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+        <div class="form-group">
+          <label for="docIdInput">Document ID</label>
+          <input type="text" id="docIdInput" placeholder="e.g. demo-doc-uuid" />
+        </div>
+        <div class="form-group">
+          <label for="formIdInput">Form ID</label>
+          <input type="text" id="formIdInput" placeholder="e.g. demo-form-uuid" />
+        </div>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-primary" id="btnLoadQuestions">Load Missing Questions</button>
+        <button type="button" class="btn-secondary" id="btnQuickDemo">⚡ Quick Setup Sample Application</button>
+      </div>
+      <div id="sessionMessage" class="alert" style="margin-top: 0.75rem;"></div>
+    </div>
+
+    <!-- Interactive Voice Question Card -->
+    <div class="card" id="questionCard" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="badge" id="questionProgress">Question 1 of 2</span>
+        <span class="badge" id="fieldBadge">address (text)</span>
+      </div>
+
+      <div class="question-box">
+        <h2 id="questionText">What is your address?</h2>
+        <div id="listeningIndicator" class="recording-indicator" style="display: none;">
+          <span class="pulse-dot"></span> Listening... Speak clearly into your microphone
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="btn-row" style="justify-content: center;">
+        <button type="button" class="btn-secondary" id="btnReadQuestion">
+          🔊 Read Question
+        </button>
+        <button type="button" class="btn-primary" id="btnStartListening">
+          🎤 Start Speaking
+        </button>
+        <button type="button" class="btn-danger" id="btnStopListening" disabled>
+          ⏹ Stop
+        </button>
+      </div>
+
+      <!-- Recognized Transcript -->
+      <div class="transcript-box">
+        <label for="transcriptInput">Recognized Answer (Speech-to-Text):</label>
+        <textarea id="transcriptInput" rows="2" placeholder="Your speech will appear here. You can also edit it before submitting..."></textarea>
+      </div>
+
+      <!-- Status and Submission -->
+      <div id="statusMessage" class="alert" style="margin-top: 0.75rem;"></div>
+
+      <div class="btn-row" style="margin-top: 1rem; justify-content: space-between;">
+        <button type="button" class="btn-secondary" id="btnSkipQuestion">Skip Question</button>
+        <button type="button" class="btn-success" id="btnSubmitAnswer">
+          ✓ Submit Voice Answer
+        </button>
+      </div>
+    </div>
+
+    <!-- Completed Summary Card -->
+    <div class="card" id="completionCard" style="display: none;">
+      <h3 style="color: var(--success); margin-bottom: 0.5rem;">🎉 All Missing Questions Completed!</h3>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">
+        Your voice responses have been validated and saved into the application state.
+      </p>
+      <table class="summary-list" id="summaryTable">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Accepted Value</th>
+            <th>Source</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
+      <div class="btn-row" style="margin-top: 1.25rem;">
+        <button type="button" class="btn-secondary" id="btnStartOver">Start Over</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let acceptedAnswers = [];
+    let recognition = null;
+    let isListening = false;
+
+    // Elements
+    const unsupportedWarning = document.getElementById("unsupportedWarning");
+    const sessionCard = document.getElementById("sessionCard");
+    const questionCard = document.getElementById("questionCard");
+    const completionCard = document.getElementById("completionCard");
+    const docIdInput = document.getElementById("docIdInput");
+    const formIdInput = document.getElementById("formIdInput");
+    const sessionMessage = document.getElementById("sessionMessage");
+    const questionProgress = document.getElementById("questionProgress");
+    const fieldBadge = document.getElementById("fieldBadge");
+    const questionText = document.getElementById("questionText");
+    const listeningIndicator = document.getElementById("listeningIndicator");
+    const transcriptInput = document.getElementById("transcriptInput");
+    const statusMessage = document.getElementById("statusMessage");
+    const btnReadQuestion = document.getElementById("btnReadQuestion");
+    const btnStartListening = document.getElementById("btnStartListening");
+    const btnStopListening = document.getElementById("btnStopListening");
+    const btnSubmitAnswer = document.getElementById("btnSubmitAnswer");
+    const btnSkipQuestion = document.getElementById("btnSkipQuestion");
+    const btnLoadQuestions = document.getElementById("btnLoadQuestions");
+    const btnQuickDemo = document.getElementById("btnQuickDemo");
+    const btnStartOver = document.getElementById("btnStartOver");
+    const summaryBody = document.getElementById("summaryBody");
+
+    // Check Speech Recognition API
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      unsupportedWarning.style.display = "block";
+      btnStartListening.disabled = true;
+    } else {
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = "en-US";
+
+      recognition.onstart = () => {
+        isListening = true;
+        listeningIndicator.style.display = "inline-flex";
+        btnStartListening.disabled = true;
+        btnStopListening.disabled = false;
+        showStatus("Listening for your answer...", "warning");
+      };
+
+      recognition.onresult = (event) => {
+        const lastIndex = event.results.length - 1;
+        const transcript = event.results[lastIndex][0].transcript;
+        transcriptInput.value = transcript.trim();
+        showStatus("Speech recognized. Review and click 'Submit Voice Answer'.", "success");
+      };
+
+      recognition.onerror = (event) => {
+        isListening = false;
+        listeningIndicator.style.display = "none";
+        btnStartListening.disabled = false;
+        btnStopListening.disabled = true;
+
+        if (event.error === "not-allowed") {
+          showStatus("Microphone permission denied. Please enable microphone access in browser.", "danger");
+        } else if (event.error === "no-speech") {
+          showStatus("No speech detected. Click 'Start Speaking' and try again.", "warning");
+        } else {
+          showStatus(`Speech recognition error: ${event.error}`, "danger");
+        }
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        listeningIndicator.style.display = "none";
+        btnStartListening.disabled = false;
+        btnStopListening.disabled = true;
+      };
+    }
+
+    function showStatus(msg, type) {
+      statusMessage.className = `alert ${type}`;
+      statusMessage.textContent = msg;
+      statusMessage.style.display = "block";
+    }
+
+    function hideStatus() {
+      statusMessage.style.display = "none";
+    }
+
+    function showSessionMessage(msg, type) {
+      sessionMessage.className = `alert ${type}`;
+      sessionMessage.textContent = msg;
+      sessionMessage.style.display = "block";
+    }
+
+    // TTS: Read Question Aloud
+    btnReadQuestion.addEventListener("click", () => {
+      const q = currentQuestions[currentIndex];
+      if (!q) return;
+
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(q.question_text);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        showStatus("Speech Synthesis is not supported in this browser.", "warning");
+      }
+    });
+
+    // STT: Start / Stop
+    btnStartListening.addEventListener("click", () => {
+      if (!recognition) return;
+      hideStatus();
+      try {
+        recognition.start();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    btnStopListening.addEventListener("click", () => {
+      if (recognition && isListening) {
+        recognition.stop();
+      }
+    });
+
+    // Load Questions
+    btnLoadQuestions.addEventListener("click", async () => {
+      const docId = docIdInput.value.trim();
+      const formId = formIdInput.value.trim();
+      if (!docId || !formId) {
+        showSessionMessage("Please provide both Document ID and Form ID.", "danger");
+        return;
+      }
+
+      showSessionMessage("Fetching generated questions...", "warning");
+      try {
+        const res = await fetch(`/api/applications/${docId}/${formId}/questions`);
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || "Failed to load questions");
+        }
+        const data = await res.json();
+        currentQuestions = data.questions || [];
+        if (currentQuestions.length === 0) {
+          showSessionMessage("No missing fields found! All fields are already matched.", "success");
+          return;
+        }
+
+        sessionMessage.style.display = "none";
+        currentIndex = 0;
+        acceptedAnswers = [];
+        renderCurrentQuestion();
+        questionCard.style.display = "block";
+        completionCard.style.display = "none";
+      } catch (err) {
+        showSessionMessage(err.message, "danger");
+      }
+    });
+
+    // Quick Demo Session Setup
+    btnQuickDemo.addEventListener("click", async () => {
+      showSessionMessage("Setting up sample demo documents and forms...", "warning");
+      try {
+        // 1. Upload sample doc
+        const dummyPdf = new Blob(["%PDF-1.4 sample demo"], { type: "application/pdf" });
+        const docForm = new FormData();
+        docForm.append("file", dummyPdf, "sample_passport.pdf");
+
+        const docRes = await fetch("/api/documents/upload", { method: "POST", body: docForm });
+        const docData = await docRes.json();
+
+        // 2. Upload sample form
+        const formForm = new FormData();
+        formForm.append("file", dummyPdf, "sample_admission.pdf");
+
+        const formRes = await fetch("/api/forms/upload", { method: "POST", body: formForm });
+        const formData = await formRes.json();
+
+        docIdInput.value = docData.document_id;
+        formIdInput.value = formData.form_id;
+
+        // 3. Load questions automatically
+        btnLoadQuestions.click();
+      } catch (err) {
+        showSessionMessage(`Demo setup failed: ${err.message}`, "danger");
+      }
+    });
+
+    // Render Current Question
+    function renderCurrentQuestion() {
+      if (currentIndex >= currentQuestions.length) {
+        showCompletionSummary();
+        return;
+      }
+      const q = currentQuestions[currentIndex];
+      questionProgress.textContent = `Question ${currentIndex + 1} of ${currentQuestions.length}`;
+      fieldBadge.textContent = `${q.field_name} (${q.field_type})`;
+      questionText.textContent = q.question_text;
+      transcriptInput.value = "";
+      hideStatus();
+
+      // Read question aloud automatically if enabled
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(q.question_text);
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // Submit Voice Answer
+    btnSubmitAnswer.addEventListener("click", async () => {
+      const docId = docIdInput.value.trim();
+      const formId = formIdInput.value.trim();
+      const q = currentQuestions[currentIndex];
+      const answer = transcriptInput.value.trim();
+
+      if (!answer) {
+        showStatus("Answer transcript is empty. Please speak or type an answer.", "danger");
+        return;
+      }
+
+      showStatus("Validating and submitting answer...", "warning");
+      btnSubmitAnswer.disabled = true;
+
+      try {
+        const payload = {
+          question_id: q.question_id,
+          field_name: q.field_name,
+          answer: answer,
+          source: "voice"
+        };
+
+        const res = await fetch(`/api/applications/${docId}/${formId}/answers`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || "Validation failed");
+        }
+
+        const resData = await res.json();
+        showStatus(`✓ Answer accepted: "${resData.answer}"`, "success");
+
+        acceptedAnswers.push(resData);
+
+        // Advance to next question after a brief feedback pause
+        setTimeout(() => {
+          btnSubmitAnswer.disabled = false;
+          currentIndex++;
+          renderCurrentQuestion();
+        }, 1200);
+
+      } catch (err) {
+        btnSubmitAnswer.disabled = false;
+        showStatus(`Validation Error: ${err.message}`, "danger");
+      }
+    });
+
+    // Skip Question
+    btnSkipQuestion.addEventListener("click", () => {
+      currentIndex++;
+      renderCurrentQuestion();
+    });
+
+    // Completion Summary
+    function showCompletionSummary() {
+      questionCard.style.display = "none";
+      completionCard.style.display = "block";
+      summaryBody.innerHTML = "";
+
+      acceptedAnswers.forEach((ans) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${ans.field_name}</strong></td>
+          <td>${ans.answer}</td>
+          <td><span class="badge" style="background:#e0e7ff; color:#3730a3;">${ans.source}</span></td>
+          <td><span class="badge" style="background:#dcfce7; color:#15803d;">${ans.status}</span></td>
+        `;
+        summaryBody.appendChild(tr);
+      });
+    }
+
+    // Start Over
+    btnStartOver.addEventListener("click", () => {
+      completionCard.style.display = "none";
+      questionCard.style.display = "none";
+      docIdInput.value = "";
+      formIdInput.value = "";
+      currentQuestions = [];
+      currentIndex = 0;
+      acceptedAnswers = [];
+      hideStatus();
+    });
+  </script>
+</body>
+</html>

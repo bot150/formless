@@ -1,141 +1,302 @@
-@font-face {
-  font-family: "Priestacy";
-  src: url("/fonts/Priestacy.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+/* ========================================
+   FORMLESS PAGE
+======================================== */
 
 .formless-page {
   min-height: 100vh;
+  width: 100%;
+
   background: #f8f4f0;
   color: #6b1f2b;
 }
 
+
+/* ========================================
+   HERO
+======================================== */
+
 .hero {
-  min-height: 100vh;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
   position: relative;
 
-  padding: 40px 24px;
+  min-height: 100vh;
+  width: 100%;
 
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   overflow: hidden;
 }
 
-/* Small top text */
 
-.eyebrow {
+/* ========================================
+   TOP BAR
+======================================== */
+
+.top-bar {
   position: absolute;
-  top: 10%;
 
-  margin: 0;
+  top: 28px;
+  left: 46px;
+  right: 46px;
 
-  font-family: Arial, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+
+/* ========================================
+   BRAND
+======================================== */
+
+.brand {
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 20px;
+  font-weight: 600;
+
+  letter-spacing: -0.06em;
 
   color: #6b1f2b;
 }
 
-/* Main Formless title */
+
+/* ========================================
+   CATEGORY
+======================================== */
+
+.category {
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 14px;
+  font-weight: 400;
+
+  color: #8a6066;
+
+  letter-spacing: 0;
+}
+
+
+/* ========================================
+   HERO CONTENT
+======================================== */
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+
+  padding: 40px 24px;
+
+  text-align: center;
+}
+
+
+/* ========================================
+   EYEBROW
+======================================== */
+
+.eyebrow {
+  margin: 0 0 34px;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 16px;
+  font-weight: 400;
+
+  line-height: 1.4;
+
+  color: #8a6066;
+
+  letter-spacing: 0;
+}
+
+
+/* ========================================
+   MAIN FORMLESS TITLE
+======================================== */
 
 .logo {
   margin: 0;
 
-  font-family: "Priestacy", serif;
-  font-size: clamp(90px, 15vw, 220px);
-  font-weight: 400;
-  line-height: 0.9;
-
-  letter-spacing: -0.04em;
-
-  color: #6b1f2b;
-}
-
-/* Subtitle */
-
-.subtitle {
-  margin: 40px 0 32px;
-
-  max-width: 420px;
-
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-
-  color: #6b1f2b;
-}
-
-/* Button */
-
-.start-button {
   display: flex;
   align-items: center;
   justify-content: center;
 
-  gap: 18px;
+  font-family: Arial, Helvetica, sans-serif;
 
-  padding: 14px 24px;
+  font-size: clamp(80px, 16vw, 220px);
+
+  font-weight: 700;
+
+  line-height: 0.8;
+
+  color: #6b1f2b;
+
+  white-space: nowrap;
+
+  gap: 0.025em;
+}
+
+
+/*
+   Each letter is an individual span.
+*/
+
+.logo span {
+  display: block;
+}
+
+
+/* ========================================
+   SUBTITLE
+======================================== */
+
+.subtitle {
+  margin: 42px 0 26px;
+
+  max-width: 500px;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 20px;
+  font-weight: 400;
+
+  line-height: 1.45;
+
+  color: #7d4b53;
+
+  letter-spacing: 0;
+}
+
+
+/* ========================================
+   START BUTTON
+======================================== */
+
+.start-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 32px;
+
+  min-width: 185px;
+  height: 57px;
+
+  padding: 0 25px;
 
   border: 1px solid #6b1f2b;
-  border-radius: 999px;
+  border-radius: 12px;
 
   background: #6b1f2b;
+
   color: #f8f4f0;
 
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 15px;
+  font-weight: 600;
 
   cursor: pointer;
 
   transition:
-    background 0.25s ease,
-    color 0.25s ease,
-    gap 0.25s ease,
-    transform 0.25s ease;
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    gap 0.2s ease;
 }
 
-.start-button span {
+
+/* ========================================
+   ARROW
+======================================== */
+
+.arrow {
   font-size: 18px;
+
+  transition: transform 0.2s ease;
 }
+
+
+/* ========================================
+   BUTTON HOVER
+======================================== */
 
 .start-button:hover {
   background: transparent;
+
   color: #6b1f2b;
 
-  gap: 26px;
+  gap: 38px;
 
   transform: translateY(-2px);
 }
 
-/* Mobile */
 
-@media (max-width: 600px) {
+.start-button:hover .arrow {
+  transform: translate(3px, 3px);
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 700px) {
+
+  .top-bar {
+    top: 22px;
+
+    left: 24px;
+    right: 24px;
+  }
+
+
+  .brand {
+    font-size: 18px;
+  }
+
+
+  .category {
+    max-width: 120px;
+
+    font-size: 12px;
+
+    text-align: right;
+  }
+
 
   .eyebrow {
-    top: 8%;
-    font-size: 11px;
+    margin-bottom: 28px;
+
+    font-size: 14px;
   }
+
 
   .logo {
     font-size: clamp(64px, 18vw, 120px);
+
+    gap: 0.02em;
   }
+
 
   .subtitle {
     margin-top: 32px;
 
-    max-width: 300px;
+    max-width: 320px;
+
+    font-size: 16px;
+  }
+
+
+  .start-button {
+    min-width: 165px;
+
+    height: 52px;
 
     font-size: 14px;
   }

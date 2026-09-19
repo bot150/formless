@@ -1,0 +1,249 @@
+.formless-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f8f4f0;
+
+  opacity: 1;
+  visibility: visible;
+
+  transition:
+    opacity 0.7s ease,
+    visibility 0.7s ease;
+}
+
+.formless-loader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Main vertical pill */
+
+.loader-pill {
+  position: relative;
+
+  width: 62px;
+  height: 124px;
+
+  border-radius: 999px;
+
+  background: #6b1f2b;
+
+  overflow: hidden;
+}
+
+/* Moving circles */
+
+.loader-dot {
+  position: absolute;
+
+  width: 24px;
+  height: 24px;
+
+  border-radius: 50%;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  will-change: transform;
+}
+
+/* Soft Formless palette */
+
+.loader-dot-1 {
+  background: #f8f4f0;
+
+  animation:
+    loader-orbit-1 2.8s
+    cubic-bezier(0.65, 0, 0.35, 1)
+    infinite;
+}
+
+.loader-dot-2 {
+  background: #c98f98;
+
+  animation:
+    loader-orbit-2 2.8s
+    cubic-bezier(0.65, 0, 0.35, 1)
+    infinite;
+}
+
+.loader-dot-3 {
+  background: #8a6066;
+
+  animation:
+    loader-orbit-3 2.8s
+    cubic-bezier(0.65, 0, 0.35, 1)
+    infinite;
+}
+
+.loader-dot-4 {
+  background: #ead9dc;
+
+  animation:
+    loader-orbit-4 2.8s
+    cubic-bezier(0.65, 0, 0.35, 1)
+    infinite;
+}
+
+/* --------------------------------
+   DOT MOVEMENT
+-------------------------------- */
+
+@keyframes loader-orbit-1 {
+  0% {
+    transform:
+      translate(-50%, -50%)
+      translate(0, 35px);
+  }
+
+  25% {
+    transform:
+      translate(-50%, -50%)
+      translate(0, -35px);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      translate(12px, 0);
+  }
+
+  75% {
+    transform:
+      translate(-50%, -50%)
+      translate(-12px, 0);
+  }
+
+  100% {
+    transform:
+      translate(-50%, -50%)
+      translate(0, 35px);
+  }
+}
+
+@keyframes loader-orbit-2 {
+  0% {
+    transform:
+      translate(-50%, -50%)
+      translate(-12px, -10px);
+  }
+
+  25% {
+    transform:
+      translate(-50%, -50%)
+      translate(12px, -32px);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      translate(10px, 25px);
+  }
+
+  75% {
+    transform:
+      translate(-50%, -50%)
+      translate(-12px, 5px);
+  }
+
+  100% {
+    transform:
+      translate(-50%, -50%)
+      translate(-12px, -10px);
+  }
+}
+
+@keyframes loader-orbit-3 {
+  0% {
+    transform:
+      translate(-50%, -50%)
+      translate(12px, 15px);
+  }
+
+  25% {
+    transform:
+      translate(-50%, -50%)
+      translate(-10px, 30px);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      translate(-12px, -20px);
+  }
+
+  75% {
+    transform:
+      translate(-50%, -50%)
+      translate(12px, -5px);
+  }
+
+  100% {
+    transform:
+      translate(-50%, -50%)
+      translate(12px, 15px);
+  }
+}
+
+@keyframes loader-orbit-4 {
+  0% {
+    transform:
+      translate(-50%, -50%)
+      translate(0, -28px);
+  }
+
+  25% {
+    transform:
+      translate(-50%, -50%)
+      translate(12px, 15px);
+  }
+
+  50% {
+    transform:
+      translate(-50%, -50%)
+      translate(-12px, 30px);
+  }
+
+  75% {
+    transform:
+      translate(-50%, -50%)
+      translate(0, -10px);
+  }
+
+  100% {
+    transform:
+      translate(-50%, -50%)
+      translate(0, -28px);
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .loader-pill {
+    width: 52px;
+    height: 104px;
+  }
+
+  .loader-dot {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-dot {
+    animation: none;
+  }
+}
